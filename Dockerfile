@@ -1,22 +1,16 @@
-# Python Based Docker
-FROM python:latest
+FROM python:3.10-slim
 
-# Installing Packages
-RUN apt update && apt upgrade -y
-RUN apt install git curl python3-pip ffmpeg aria2 -y
+WORKDIR /EXTRACTOR
 
-# Updating Pip Packages
-RUN pip3 install -U pip
+# System deps
+RUN apt-get update && apt-get install -y build-essential ninja-build
 
-# Copying Requirements
-COPY requirements.txt /requirements.txt
+# Upgrade pip, setuptools, wheel
+RUN pip3 install --upgrade pip setuptools wheel
 
-# Installing Requirements
-RUN cd /
+# Copy requirements and install
+COPY requirements.txt .
 RUN pip3 install -U -r requirements.txt
-RUN mkdir /EXTRACTOR
-WORKDIR / EXTRACTOR
-COPY start.sh /start.sh
 
-# Running MessageSearchBot
-CMD ["/bin/bash", "/start.sh"
+# Copy rest of the app
+COPY . .
