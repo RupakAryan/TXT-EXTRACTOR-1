@@ -1,22 +1,23 @@
-# Use official Python image
-FROM python:3.10-slim
 
-# Set working directory
-WORKDIR /app
+# Python Based Docker
+FROM python:latest
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y build-essential
+# Installing Packages
+RUN apt update && apt upgrade -y
+RUN apt install git curl python3-pip ffmpeg aria2 -y
 
-# Copy requirements.txt and install dependencies
-COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Updating Pip Packages
+RUN pip3 install -U pip
 
-# Copy the rest of the app
-COPY . .
+# Copying Requirements
+COPY requirements.txt /requirements.txt
 
-# Expose the port Render will use
-EXPOSE 10000
+# Installing Requirements
+RUN cd /
+RUN pip3 install -U -r requirements.txt
+RUN mkdir /EXTRACTOR
+WORKDIR / EXTRACTOR
+COPY start.sh /start.sh
 
-# Run the app with gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]
+# Running MessageSearchBot
+CMD ["/bin/bash", "/start.sh"
