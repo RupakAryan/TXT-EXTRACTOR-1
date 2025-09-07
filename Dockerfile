@@ -1,16 +1,22 @@
+# Use official Python image
 FROM python:3.10-slim
 
-WORKDIR /EXTRACTOR
+# Set working directory
+WORKDIR /app
 
-# System deps
-RUN apt-get update && apt-get install -y build-essential ninja-build
+# Install system dependencies
+RUN apt-get update && apt-get install -y build-essential
 
-# Upgrade pip, setuptools, wheel
-RUN pip3 install --upgrade pip setuptools wheel
-
-# Copy requirements and install
+# Copy requirements.txt and install dependencies
 COPY requirements.txt .
-RUN pip3 install -U -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Copy rest of the app
+# Copy the rest of the app
 COPY . .
+
+# Expose the port Render will use
+EXPOSE 10000
+
+# Run the app with gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]
