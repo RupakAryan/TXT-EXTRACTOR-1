@@ -1,5 +1,5 @@
-# Use more compatible base image
-FROM python:3.10-slim-buster
+# Use supported base image
+FROM python:3.10-slim-bookworm
 
 # Install system packages
 RUN apt update && apt install -y \
