@@ -34,4 +34,4 @@ bs4
 flask
 pyromod
 gunicorn
-
+Flask==2.3.3
