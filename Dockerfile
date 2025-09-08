@@ -1,23 +1,34 @@
+# Use more compatible base image
+FROM python:3.10-slim-buster
 
-# Python Based Docker
-FROM python:latest
+# Install system packages
+RUN apt update && apt install -y \
+    build-essential \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    curl \
+    git \
+    ffmpeg \
+    aria2 \
+    python3-pip
 
-# Installing Packages
-RUN apt update && apt upgrade -y
-RUN apt install git curl python3-pip ffmpeg aria2 -y
+# Upgrade pip
+RUN pip3 install --upgrade pip
 
-# Updating Pip Packages
-RUN pip3 install -U pip
-
-# Copying Requirements
+# Copy requirements
 COPY requirements.txt /requirements.txt
 
-# Installing Requirements
-RUN cd /
-RUN pip3 install -U -r requirements.txt
-RUN mkdir /EXTRACTOR
-WORKDIR / EXTRACTOR
-COPY start.sh /start.sh
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r /requirements.txt
 
-# Running MessageSearchBot
-CMD ["/bin/bash", "/start.sh"
+# Set up working directory
+RUN mkdir /EXTRACTOR
+WORKDIR /EXTRACTOR
+
+# Copy start script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Start the app
+CMD ["/bin/bash", "/start.sh"]
